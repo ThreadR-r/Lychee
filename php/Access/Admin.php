@@ -107,7 +107,7 @@ final class Admin extends Access {
 		Validator::required(isset($_POST['title']), __METHOD__);
 
 		$album = new Album(null);
-		Response::json($album->add($_POST['title']), JSON_NUMERIC_CHECK);
+		Response::json($album->add($_POST['title'], false, $_POST['parent_id']), JSON_NUMERIC_CHECK);
 
 	}
 

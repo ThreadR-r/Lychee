@@ -23,7 +23,7 @@ final class Album {
 	/**
 	 * @return string|false ID of the created album.
 	 */
-	public function add($title = 'Untitled', $use_existing = false) {
+	public function add($title = 'Untitled', $use_existing = false, $parent = -1) {
 
 		// Check if album exists
 		if ($use_existing) {
@@ -45,7 +45,7 @@ final class Album {
 		$visible  = 1;
 
 		// Database
-		$query  = Database::prepare(Database::get(), "INSERT INTO ? (id, title, sysstamp, min_takestamp, max_takestamp, public, visible, license) VALUES ('?', '?', '?', '?', '?', '?', '?', '?')", array(LYCHEE_TABLE_ALBUMS, $id, $title, $sysstamp, $min_takestamp, $max_takestamp, $public, $visible, 'none'));
+		$query  = Database::prepare(Database::get(), "INSERT INTO ? (id, title, sysstamp, min_takestamp, max_takestamp, public, visible, license, parent) VALUES ('?', '?', '?', '?', '?', '?', '?', '?', '?')", array(LYCHEE_TABLE_ALBUMS, $id, $title, $sysstamp, $min_takestamp, $max_takestamp, $public, $visible, 'none', $parent));
 		$result = Database::execute(Database::get(), $query, __METHOD__, __LINE__);
 
 		// Call plugins
@@ -73,6 +73,7 @@ final class Album {
 		$album['id']     = $data['id'];
 		$album['title']  = $data['title'];
 		$album['public'] = $data['public'];
+		$album['parent_id'] = $data['parent'];
 
 		// Additional attributes
 		// Only part of $album when available
@@ -162,6 +163,11 @@ final class Album {
 		// Get photos
 		$photos          = Database::execute(Database::get(), $query, __METHOD__, __LINE__);
 		$previousPhotoID = '';
+
+		// Get albums
+		$albums = new Albums();
+		$albums = $albums->get(false, $this->albumIDs)['albums'];
+		$return['albums'] = $albums;
 
 		if ($photos===false) return false;
 

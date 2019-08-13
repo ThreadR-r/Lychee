@@ -12,5 +12,6 @@ CREATE TABLE IF NOT EXISTS `?` (
   `password` varchar(100) DEFAULT NULL,
   `min_takestamp` int(11) NOT NULL,
   `max_takestamp` int(11) NOT NULL,
+  `parent` bigint(14) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
